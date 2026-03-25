@@ -14,8 +14,7 @@ utilities:
   # Terminal & Multiplexers
   - name: "tmux"
     display_name: "tmux"
-    config_path: "~/.tmux.conf"
-    parser: "tmux"
+    parser: "static"
     enabled: true
 
   - name: "alacritty"
