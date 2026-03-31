@@ -1,14 +1,30 @@
 # Keymap Helper
 
-A TUI tool to quickly lookup keymaps and shortcuts for your most-used developer tools.
+A blazingly fast TUI to instantly lookup keymaps and shortcuts across all your developer tools.
 
-## Features
+> **Never Google a keybinding again.**
 
-- Two-level fuzzy search interface powered by fzf
-- Parses config files dynamically (i3, tmux, neovim, alacritty)
-- Comprehensive built-in keymaps for common CLI tools
-- Organized by categories for easy navigation
-- Integrated with tmux for quick access (C-a + K)
+## ✨ Features
+
+- **Two-level fuzzy search** - Find any keybinding in milliseconds
+- **Dynamic config parsing** - Reads your actual dotfiles (i3, tmux, neovim, alacritty)
+- **14+ tools included** - Bash, Git, Docker, fzf, and more
+- **Statistics dashboard** - Track 300+ keymaps across your toolkit
+- **Tmux integration** - Press `C-a K` from anywhere
+- **Always in sync** - Parses configs on-the-fly, no manual updates
+
+## 🚀 Quick Install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/KeymapHelper/main/install.sh | bash
+```
+
+Or manually:
+```bash
+git clone https://github.com/YOUR_USERNAME/KeymapHelper.git ~/.keymap-helper
+cd ~/.keymap-helper
+./keymap-helper.sh
+```
 
 ## Installation
 
@@ -17,10 +33,41 @@ The tool is already set up in `~/Documents/Vikas/KeymapHelper`
 ### Dependencies
 
 - Python 3.6+
-- PyYAML (already installed)
-- fzf (already installed at ~/.fzf/bin/fzf)
+- PyYAML
+- fzf
 
-## Usage
+All dependencies are automatically installed by the install script.
+
+## 📊 Statistics Dashboard
+
+Ever wondered how many keybindings you actually use?
+
+```bash
+keymap --stats
+```
+
+Shows:
+- Total utilities tracked
+- Total keymaps across all tools
+- Breakdown by utility
+- Fun facts about your setup
+
+Example output:
+```
+╔════════════════════════════════════════════════════════════════════╗
+║                  📊 KEYMAP STATISTICS DASHBOARD                    ║
+╚════════════════════════════════════════════════════════════════════╝
+
+Total Utilities:     14
+Total Keymaps:       304
+Total Categories:    44
+
+💡 FUN FACTS:
+   • 'tmux' has the most keymaps (70)
+   • Memory power level: Wizard 🧙
+```
+
+## 🎯 Usage
 
 ### Quick Access from tmux
 
@@ -169,3 +216,22 @@ Possible additions:
 - Custom keymap notes/annotations
 - Keymap conflicts detection
 - Web-based UI option
+
+## 📸 Demo & Screenshots
+
+Want to showcase this project? Check out [DEMO_GUIDE.md](DEMO_GUIDE.md) for:
+- How to record professional demos
+- GIF/video conversion for social media
+- Sample post copy for Twitter/X and LinkedIn
+- Recording tips and tricks
+
+## 🤝 Contributing
+
+Contributions welcome! Especially:
+- New tool parsers
+- Built-in keymaps for additional CLI tools
+- Bug fixes and improvements
+
+## 📝 License
+
+MIT License - Feel free to use and modify!

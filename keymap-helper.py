@@ -145,6 +145,98 @@ def get_utility_by_display_name(display_name, config):
     return None
 
 
+def get_statistics(config, static_keymaps):
+    """
+    Calculate statistics about keymaps across all utilities
+    Returns dict with stats
+    """
+    utilities = config.get('utilities', [])
+    enabled = [u for u in utilities if u.get('enabled', True)]
+    
+    total_keymaps = 0
+    total_categories = set()
+    utility_stats = []
+    
+    for util in enabled:
+        keymaps = get_keymaps_for_utility(util, config, static_keymaps)
+        categories = set(km.get('category', 'Other') for km in keymaps)
+        
+        utility_stats.append({
+            'name': util.get('display_name', util.get('name')),
+            'count': len(keymaps),
+            'categories': len(categories)
+        })
+        
+        total_keymaps += len(keymaps)
+        total_categories.update(categories)
+    
+    return {
+        'total_utilities': len(enabled),
+        'total_keymaps': total_keymaps,
+        'total_categories': len(total_categories),
+        'utility_breakdown': sorted(utility_stats, key=lambda x: x['count'], reverse=True)
+    }
+
+
+def format_statistics(stats):
+    """Format statistics for display"""
+    lines = []
+    
+    # Header
+    lines.append("╔════════════════════════════════════════════════════════════════════╗")
+    lines.append("║                  📊 KEYMAP STATISTICS DASHBOARD                    ║")
+    lines.append("╚════════════════════════════════════════════════════════════════════╝")
+    lines.append("")
+    
+    # Summary stats
+    lines.append("┌─ SUMMARY " + "─" * 58 + "┐")
+    lines.append(f"│  Total Utilities:     {stats['total_utilities']:<44} │")
+    lines.append(f"│  Total Keymaps:       {stats['total_keymaps']:<44} │")
+    lines.append(f"│  Total Categories:    {stats['total_categories']:<44} │")
+    lines.append("└" + "─" * 69 + "┘")
+    lines.append("")
+    
+    # Per-utility breakdown
+    lines.append("┌─ BREAKDOWN BY UTILITY " + "─" * 45 + "┐")
+    lines.append(f"│  {'Utility':<40} {'Keymaps':<10} {'Categories':<10} │")
+    lines.append("├" + "─" * 69 + "┤")
+    
+    for util_stat in stats['utility_breakdown']:
+        name = util_stat['name']
+        count = util_stat['count']
+        cats = util_stat['categories']
+        
+        # Truncate long names
+        if len(name) > 38:
+            name = name[:35] + "..."
+        
+        lines.append(f"│  {name:<40} {count:<10} {cats:<10} │")
+    
+    lines.append("└" + "─" * 69 + "┘")
+    lines.append("")
+    
+    # Fun facts
+    top_util = stats['utility_breakdown'][0] if stats['utility_breakdown'] else None
+    if top_util:
+        lines.append("💡 FUN FACTS:")
+        lines.append(f"   • '{top_util['name']}' has the most keymaps ({top_util['count']})")
+        lines.append(f"   • You have an average of {stats['total_keymaps'] // stats['total_utilities']:.0f} keymaps per utility")
+        
+        # Calculate memory power
+        if stats['total_keymaps'] < 100:
+            power_level = "Beginner 🌱"
+        elif stats['total_keymaps'] < 200:
+            power_level = "Intermediate 🔥"
+        elif stats['total_keymaps'] < 300:
+            power_level = "Advanced ⚡"
+        else:
+            power_level = "Wizard 🧙"
+        
+        lines.append(f"   • Memory power level: {power_level}")
+    
+    return '\n'.join(lines)
+
+
 def main():
     """Main entry point"""
     if len(sys.argv) < 2:
@@ -152,6 +244,7 @@ def main():
         print("Commands:")
         print("  list-utilities    - List all enabled utilities")
         print("  show <utility>    - Show keymaps for utility")
+        print("  stats             - Show keymap statistics dashboard")
         sys.exit(1)
     
     command = sys.argv[1]
@@ -176,6 +269,11 @@ def main():
         separator = config.get('display', {}).get('category_separator', '━━━')
         formatted = format_keymaps_for_fzf(keymaps, separator)
         
+        print(formatted)
+    
+    elif command == 'stats':
+        stats = get_statistics(config, static_keymaps)
+        formatted = format_statistics(stats)
         print(formatted)
     
     else:

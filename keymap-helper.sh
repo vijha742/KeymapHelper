@@ -39,6 +39,12 @@ show_utility_keymaps() {
 }
 
 main() {
+    # Check for --stats flag
+    if [[ "$1" == "--stats" || "$1" == "-s" ]]; then
+        "$HELPER_SCRIPT" stats
+        exit 0
+    fi
+    
     # Check if Python is available
     if ! command -v python3 &> /dev/null; then
         echo "Error: Python 3 is required but not found"
@@ -57,9 +63,10 @@ main() {
         # Select utility
         selected_utility=$("$HELPER_SCRIPT" list-utilities | fzf \
             --ansi \
-            --header="Select a utility to view keymaps | Press / to search, ESC or q to quit" \
+            --header="Select a utility to view keymaps | Press / to search, ESC or q to quit | Ctrl+S for stats" \
             --header-first \
             --prompt="Select utility: " \
+            --bind='ctrl-s:execute('"$HELPER_SCRIPT"' stats | less -R)+abort' \
             --preview-window=hidden)
         
         # Check if user cancelled
@@ -72,4 +79,4 @@ main() {
     done
 }
 
-main
+main "$@"
